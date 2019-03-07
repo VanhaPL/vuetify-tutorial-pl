@@ -2,6 +2,19 @@
   <div class="dashboard">
     <h1 class="subheading grey--text">dashboard</h1>
     <v-container class="my-5">
+      <!-- Przyciski górne -->
+      <v-layout row class="mb-3">
+        <v-btn small flat color="grey" @click="sortBy('title')">
+          <v-icon left small>folder</v-icon>
+          <span class="caption text-lowercase">By project name</span>
+        </v-btn>
+        <v-btn small flat color="grey" @click="sortBy('person')">
+          <v-icon left small>person</v-icon>
+          <span class="caption text-lowercase">By person</span>
+        </v-btn>
+      </v-layout>
+      <!-- END Przyciski górne -->
+      <!-- Karta z wszystkimi postami -->
       <v-card flat v-for="project in projects" :key="project.title">
         <v-layout row wrap :class="`pa-3 project ${project.status}`">
           <v-flex xs12 md6>
@@ -24,6 +37,7 @@
         </v-layout>
         <v-divider></v-divider>
       </v-card>
+      <!-- END Karta z wszystkimi postami -->
     </v-container>
   </div>
 </template>
@@ -83,6 +97,11 @@ export default {
         }
       ]
     };
+  },
+  methods: {
+    sortBy(prop) {
+      this.projects.sort((a, b) => (a[prop] < b[prop] ? -1 : 1));
+    }
   }
 };
 </script>
