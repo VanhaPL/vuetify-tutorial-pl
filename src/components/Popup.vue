@@ -24,7 +24,7 @@
           <!-- END
           date picker-->
           <v-spacer></v-spacer>
-          <v-btn flat class="success mx-0 mt-3" @click="submitka">Add project</v-btn>
+          <v-btn flat class="success mx-0 mt-3" @click="submitka" :loading="loadowanie">Add project</v-btn>
         </v-form>
       </v-card-text>
     </v-card>
@@ -41,12 +41,14 @@ export default {
       title: "",
       content: "",
       due: null,
-      inputRules: [v => v.length >= 3 || "wpisz minimum 3 znaki"]
+      inputRules: [v => v.length >= 3 || "wpisz minimum 3 znaki"],
+      loadowanie: false
     };
   },
   methods: {
     submitka() {
       if (this.$refs.form.validate()) {
+        this.loadowanie = true;
         // podpinam firebase tutaj
         const project = {
           title: this.title,
@@ -58,7 +60,7 @@ export default {
         db.collection("projects")
           .add(project)
           .then(() => {
-            console.log("added to db");
+            this.loadowanie = false;
           });
       }
     }
