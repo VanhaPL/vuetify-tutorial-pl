@@ -33,6 +33,7 @@
 
 <script>
 import format from "date-fns/format";
+import db from "@/fb";
 
 export default {
   data() {
@@ -46,7 +47,19 @@ export default {
   methods: {
     submitka() {
       if (this.$refs.form.validate()) {
-        console.log(this.title, this.content);
+        // podpinam firebase tutaj
+        const project = {
+          title: this.title,
+          content: this.content,
+          due: format(this.due, "do MMM YYYY"),
+          person: "Vanha",
+          status: "ongoing"
+        };
+        db.collection("projects")
+          .add(project)
+          .then(() => {
+            console.log("added to db");
+          });
       }
     }
   },
