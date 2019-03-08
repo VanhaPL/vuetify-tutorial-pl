@@ -1,5 +1,5 @@
 <template>
-  <v-dialog max-width="600px">
+  <v-dialog max-width="600px" v-model="dialogClose">
     <v-btn flat slot="activator" class="success">Add new project</v-btn>
     <v-card>
       <v-card-title>
@@ -42,7 +42,8 @@ export default {
       content: "",
       due: null,
       inputRules: [v => v.length >= 3 || "wpisz minimum 3 znaki"],
-      loadowanie: false
+      loadowanie: false,
+      dialogClose: false
     };
   },
   methods: {
@@ -61,6 +62,7 @@ export default {
           .add(project)
           .then(() => {
             this.loadowanie = false;
+            this.dialogClose = false;
           });
       }
     }
