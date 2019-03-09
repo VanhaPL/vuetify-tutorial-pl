@@ -1,16 +1,14 @@
 <template>
   <div class="projects">
-    <h1 class="subheading grey--text">projects</h1>
+    <h1 class="subheading grey--text">Projects</h1>
 
     <v-container class="my-5">
-      <v-expansion-panel v-for="project in myProjects" :key="project.title">
-        <v-expansion-panel-content>
-          <template v-slot:header>
-            <div>{{ project.title }}</div>
-          </template>
+      <v-expansion-panel>
+        <v-expansion-panel-content v-for="project in myProjects" :key="project.title">
+          <div slot="header" class="py-1">{{ project.title }}</div>
           <v-card>
             <v-card-text class="px-4 grey--text">
-              <div class="font-weight-bold">due by {{ project.due }}</div>
+              <div class="font-weight-bold">Due by {{ project.due }}</div>
               <div>{{ project.content }}</div>
             </v-card-text>
           </v-card>
@@ -21,75 +19,32 @@
 </template>
 
 <script>
+import db from "@/fb";
 export default {
   data() {
     return {
-      projects: [
-        {
-          title: "Design a new website",
-          person: "The Net Ninja",
-          due: "1st Jan 2019",
-          status: "ongoing",
-          content:
-            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Sunt consequuntur eos eligendi illum minima adipisci deleniti, dicta mollitia enim explicabo fugiat quidem ducimus praesentium voluptates porro molestias non sequi animi!"
-        },
-        {
-          title: "Code up the homepage",
-          person: "Chun Li",
-          due: "10th Jan 2019",
-          status: "complete",
-          content:
-            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Sunt consequuntur eos eligendi illum minima adipisci deleniti, dicta mollitia enim explicabo fugiat quidem ducimus praesentium voluptates porro molestias non sequi animi!"
-        },
-        {
-          title: "Design video thumbnails",
-          person: "Ryu",
-          due: "20th Dec 2018",
-          status: "complete",
-          content:
-            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Sunt consequuntur eos eligendi illum minima adipisci deleniti, dicta mollitia enim explicabo fugiat quidem ducimus praesentium voluptates porro molestias non sequi animi!"
-        },
-        {
-          title: "Create a phone that doesn't suck",
-          person: "Bill Gates",
-          due: "10th Oct 2018",
-          status: "overdue",
-          content:
-            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Sunt consequuntur eos eligendi illum minima adipisci deleniti, dicta mollitia enim explicabo fugiat quidem ducimus praesentium voluptates porro molestias non sequi animi!"
-        },
-        {
-          title: "Create a community forum",
-          person: "Gouken",
-          due: "20th Jan 2019",
-          status: "ongoing",
-          content:
-            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Sunt consequuntur eos eligendi illum minima adipisci deleniti, dicta mollitia enim explicabo fugiat quidem ducimus praesentium voluptates porro molestias non sequi animi!"
-        },
-        {
-          title: "Create a community forum2",
-          person: "Gouken",
-          due: "20th Oct 2018",
-          status: "overdue",
-          content:
-            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Sunt consequuntur eos eligendi illum minima adipisci deleniti, dicta mollitia enim explicabo fugiat quidem ducimus praesentium voluptates porro molestias non sequi animi!"
-        },
-        {
-          title: "Design a 2 website",
-          person: "The Net Ninja",
-          due: "44st Jan 2055",
-          status: "overdue",
-          content:
-            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Sunt consequuntur eos eligendi illum minima adipisci deleniti, dicta mollitia enim explicabo fugiat quidem ducimus praesentium voluptates porro molestias non sequi animi!"
-        }
-      ]
+      projects: []
     };
   },
   computed: {
     myProjects() {
       return this.projects.filter(project => {
-        return project.person === "The Net Ninja";
+        return project.person === "Vanha" && project.status != "complete";
       });
     }
+  },
+  created() {
+    db.collection("projects").onSnapshot(res => {
+      const changes = res.docChanges();
+      changes.forEach(change => {
+        if (change.type === "added") {
+          this.projects.push({
+            ...change.doc.data(),
+            id: change.doc.id
+          });
+        }
+      });
+    });
   }
 };
 </script>
